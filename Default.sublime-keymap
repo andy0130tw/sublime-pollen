@@ -1,0 +1,4 @@
+[
+    // insert diamond in Pollen (?
+  { "keys": ["alt+shift+l"], "command": "insert", "args": {"characters": "◊"} }
+]

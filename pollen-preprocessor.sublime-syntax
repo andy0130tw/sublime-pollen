@@ -1,0 +1,182 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Pollen Preprocessor
+file_extensions: [pp]
+first_line_match: ^#lang\s+pollen(/pre)?\s*$
+scope: source.pollen.preprocessor
+variables:
+  valid_lozenge_tag: '(◊)([^\s\{\}\(\)\[\]#\|,"''´\\;]+)'
+  pollen_commands: '(define-meta)|(when/splice)|(get-doc)|(get-metas)|(select\*)|(select-from-doc)|(select-from-metas)|(select)'
+contexts:
+  main:
+    - include: embedded-pollen
+  comment:
+    - match: '◊;[^\|\{].*'
+      scope: comment.line.semicolon.pollen
+    - match: '◊;\{'
+      push:
+        - meta_scope: comment.block.pollen
+        - match: '\}'
+          pop: true
+        - include: braces
+  braces:
+    - match: '\{'
+      push:
+        - match: '\}'
+          pop: true
+        - include: main
+        - include: braces
+  brackets:
+    - match: '\['
+      push:
+        - match: '\]'
+          pop: true
+        - include: main
+        - include: scope:source.racket
+        - include: brackets
+  embedded-pollen:
+    - include: function
+    - include: variable
+    - include: string
+    - include: comment
+  escaped-char:
+    - match: \\.
+      scope: constant.character.escape.untitled.pollen
+  function:
+    - match: (◊)(?=\()
+      captures:
+        1: punctuation.definition.function.pollen
+      push:
+        - meta_scope: meta.embedded.block.pollen
+        - match: (?<=\))
+          pop: true
+        - include: scope:source.racket
+    - match: '(◊)({{pollen_commands}})(?=\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-body-parameter
+    - match: '(◊)({{pollen_commands}})(?=\[\.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter
+    - match: '(◊)({{pollen_commands}})(?=\[\.*\][^\{])'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\])'
+          captures:
+            0: punctuation.definition.parameters.pollen
+          pop: true
+        - include: function-parameters
+    - match: '{{valid_lozenge_tag}}(?=\[.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.embedded.block.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter
+    - match: '{{valid_lozenge_tag}}(?=\[.*\][^\{])'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.embedded.block.pollen
+        - match: '(?<=\])'
+          captures:
+            0: punctuation.definition.parameters.pollen
+          pop: true
+        - include: function-parameters
+    - match: '{{valid_lozenge_tag}}(?=\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.embedded.block.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-body-parameter
+  function-body-parameter:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: function
+        - include: variable
+        - include: comment
+        - include: braces
+  function-parameters:
+    - match: '\['
+      captures:
+        0: punctuation.definition.parameters.pollen
+      push:
+        - meta_scope: meta.function.parameters.pollen
+        - match: '\]'
+          captures:
+            0: punctuation.definition.parameters.pollen
+          pop: true
+        - include: function
+        - include: variable
+        - include: comment
+        - include: brackets
+        - include: scope:source.racket
+  parentheses:
+    - match: \(
+      push:
+        - match: \)
+          pop: true
+        - include: main
+        - include: scope:source.racket
+        - include: parentheses
+  string:
+    - match: (◊)(")
+      captures:
+        1: punctuation.definition.function.pollen
+        2: string.quoted.double.pollen
+      push:
+        - meta_content_scope: string.quoted.double.pollen
+        - match: '"'
+          captures:
+            0: string.quoted.double.pollen
+          pop: true
+        - include: escaped-char
+  variable:
+    - match: '(◊)([^\s\{\}\(\)\[\]#\|,"]+)\b'
+      captures:
+        0: meta.variable.pollen
+        1: punctuation.definition.variable.pollen
+        2: variable.other.pollen
+    - match: '(◊\|)([^\s\{\}\(\)\[\]#\|,"]+)(\|)'
+      captures:
+        1: punctuation.definition.variable.pollen
+        2: variable.other.pollen
+        3: punctuation.definition.variable.pollen

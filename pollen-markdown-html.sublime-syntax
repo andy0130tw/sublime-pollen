@@ -1,0 +1,11 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Pollen markdown mode
+file_extensions: [html.pmd]
+first_line_match: ^#lang\s+pollen\s*$
+scope: text.html.pollen.markdown
+contexts:
+  main:
+    - include: scope:text.html.markdown
+    - include: scope:source.pollen.preprocessor

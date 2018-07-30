@@ -1,0 +1,11 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Pollen HTML Template
+file_extensions: [html.p]
+first_line_match: ^#lang\s+pollen\s*$
+scope: text.html.pollen.template
+contexts:
+  main:
+    - include: scope:text.html.basic
+    - include: scope:source.pollen.preprocessor

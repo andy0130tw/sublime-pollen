@@ -1,0 +1,10 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Pollen Pagetree
+file_extensions: [ptree]
+first_line_match: ^#lang\s+pollen(/ptree)?\s*$
+scope: source.pollen.pagetree
+contexts:
+  main:
+    - include: scope:source.pollen.preprocessor

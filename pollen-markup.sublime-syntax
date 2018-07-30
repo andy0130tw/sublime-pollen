@@ -1,0 +1,360 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Pollen markup
+file_extensions: [pm]
+first_line_match: ^#lang\s+pollen(/markup)?\s*$
+scope: text.pollen
+variables:
+  customized_highlight_tag_head: '[^\s\{\}\(\)\[\]#\|,"''´\\;]*highlight[^\s\{\}\(\)\[\]#\|,"''´\\;]*'
+contexts:
+  main:
+    - include: highlight-tags
+    - include: latex-math-inline
+    - include: latex-math-block
+    - include: scope:source.pollen.preprocessor
+  braces:
+    - match: '\{'
+      push:
+        - match: '\}'
+          pop: true
+        - include: main
+        - include: braces
+  brackets:
+    - match: '\['
+      push:
+        - match: '\]'
+          pop: true
+        - include: main
+        - include: scope:source.racket
+        - include: brackets
+  embedded-code-custom-tag:
+    - match: '(◊)({{customized_highlight_tag_head}})(?=\[.*\s+''racket\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/racket
+    - match: '(◊)({{customized_highlight_tag_head}})(?=\[(.*\s+|\s*)''(py|python|py3)\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/python
+    - match: '(◊)({{customized_highlight_tag_head}})(?=\[(.*\s+|\s*)''haskell\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/haskell
+    - match: '(◊)({{customized_highlight_tag_head}})(?=\[(.*\s+|\s*)''swift\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/swift
+    - match: '(◊)({{customized_highlight_tag_head}})(?=\[(.*\s+|\s*)''html\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/html
+    - match: '(◊)({{customized_highlight_tag_head}})(?=\[((.*\s+|\s*)|\s*)''css\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/css
+    - match: '(◊)({{customized_highlight_tag_head}})(?=\[(.*\s+|\s*)''(js|javascript)\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: entity.name.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/js
+  embedded-code-highlight-tag:
+    - match: '(◊)(highlight)(?=\[\s*''racket\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/racket
+    - match: '(◊)(highlight)(?=\[''(py|py3|python).*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/python
+    - match: '(◊)(highlight)(?=\[\s*''haskell\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/haskell
+    - match: '(◊)(highlight)(?=\[''swift.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/swift
+    - match: '(◊)(highlight)(?=\[\s*''html\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.html
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/html
+    - match: '(◊)(highlight)(?=\[\s*''css\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/css
+    - match: '(◊)(highlight)(?=\[\s*''(js|javascript)\b.*\]\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: support.function.pollen
+      push:
+        - meta_scope: meta.function.expression.pollen
+        - match: '(?<=\})'
+          captures:
+            0: punctuation.definition.function.pollen
+          pop: true
+        - include: function-parameters
+        - include: function-body-parameter/js
+  function-body-parameter:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: braces
+  function-body-parameter/css:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - meta_content_scope: meta.embedded.block.css
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: scope:source.css
+        - include: braces
+  function-body-parameter/haskell:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - meta_content_scope: meta.embedded.block.haskell
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: scope:source.haskell
+        - include: braces
+  function-body-parameter/html:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - meta_content_scope: meta.embedded.block.html
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: scope:text.html.basic
+        - include: braces
+  function-body-parameter/js:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - meta_content_scope: meta.embedded.block.js
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: scope:source.js
+        - include: braces
+  function-body-parameter/python:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - meta_content_scope: meta.embedded.block.python
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: scope:source.python
+        - include: braces
+  function-body-parameter/racket:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - meta_content_scope: meta.embedded.block.racket
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: scope:source.racket
+        - include: braces
+  function-body-parameter/swift:
+    - match: '\{'
+      captures:
+        0: punctuation.definition.body.pollen
+      push:
+        - meta_scope: meta.function.body.pollen
+        - meta_content_scope: meta.embedded.block.racket
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: main
+        - include: scope:source.swift
+        - include: braces
+  function-parameters:
+    - match: '\['
+      captures:
+        0: punctuation.definition.parameters.pollen
+      push:
+        - meta_scope: meta.function.parameters.pollen
+        - match: '\]'
+          captures:
+            0: punctuation.definition.parameters.pollen
+          pop: true
+        - include: main
+        - include: brackets
+        - include: scope:source.racket
+  highlight-tags:
+    - include: embedded-code-highlight-tag
+    - include: embedded-code-custom-tag
+  latex-braces:
+    - include: scope:text.tex.latex#math-content
+    - match: '\{'
+      push:
+        - match: '\}'
+          pop: true
+        - include: scope:source.pollen.preprocessor
+        - include: latex-braces
+  latex-math-inline:
+    - match: '(◊\$)(\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: punctuation.definition.body.pollen
+      push:
+        - meta_content_scope: meta.embedded.latex
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: latex-braces
+        - include: scope:text.tex.latex#math-content
+  latex-math-block:
+    - match: '(◊\$\$)(\{)'
+      captures:
+        1: punctuation.definition.function.pollen
+        2: punctuation.definition.body.pollen
+      push:
+        - meta_content_scope: meta.embedded.latex
+        - match: '\}'
+          captures:
+            0: punctuation.definition.body.pollen
+          pop: true
+        - include: latex-braces
+        - include: scope:text.tex.latex#math-content
